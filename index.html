@@ -64,9 +64,7 @@
       border: 1px solid rgba(255,255,255,.08);
     }
 
-    .brand{
-      display:flex; flex-direction:column; gap:2px;
-    }
+    .brand{ display:flex; flex-direction:column; gap:2px; }
     .brand h1{
       margin:0;
       font-size: 22px;
@@ -107,7 +105,6 @@
       padding: 14px;
     }
 
-    /* “luci” */
     .stage::before{
       content:"";
       position:absolute; inset:-80px -40px auto -40px;
@@ -392,8 +389,10 @@
 (function(){
   "use strict";
 
-  // Dataset base (puoi espanderlo: basta aggiungere oggetti)
-  const ARCHIVIO = [
+  // ------------------------------------------------------------
+  // 1) Dataset fallback (se quizzes.json non esiste o non si carica)
+  // ------------------------------------------------------------
+  const FALLBACK = [
     { parole:["Taglio","Luce","Linea","Stato","Colpo"], soluzione:"DIRITTO" },
     { parole:["Chiave","Porta","Codice","Accesso","Sistema"], soluzione:"CONTROLLO" },
     { parole:["Tempo","Foto","Diario","Infanzia","Passato"], soluzione:"RICORDO" },
@@ -401,6 +400,62 @@
     { parole:["Giro","Vento","Pagina","Boa","Affari"], soluzione:"VOLTA" },
     { parole:["Scala","Voce","Prezzo","Valori","Musica"], soluzione:"TONO" }
   ];
+
+  // ------------------------------------------------------------
+  // 2) Qui verrà caricato il tuo archivio reale da quizzes.json
+  //    Formato atteso nel file:
+  //    [{ "w1":"...", "w2":"...", "w3":"...", "w4":"...", "w5":"...", "solution":"..." }, ...]
+  // ------------------------------------------------------------
+  let ARCHIVIO = FALLBACK;
+
+  async function loadQuizzesJson(){
+    try{
+      // cache-bust per GitHub Pages / iOS (altrimenti Safari a volte “inchioda” la cache)
+      const url = "quizzes.json?v=" + Date.now();
+      const res = await fetch(url, { cache: "no-store" });
+      if(!res.ok) throw new Error("HTTP " + res.status);
+
+      const raw = await res.json();
+      const converted = convertDataset(raw);
+
+      if(converted.length >= 1){
+        ARCHIVIO = converted;
+        el("prompt").textContent = `Archivio caricato: ${ARCHIVIO.length} quiz. Scrivi la parola finale e premi “Verifica”.`;
+      }else{
+        el("prompt").textContent = "quizzes.json caricato ma vuoto/non valido. Uso esempi.";
+      }
+    }catch(err){
+      // fallback silenzioso: la UI resta operativa
+      el("prompt").textContent = "Archivio non trovato (quizzes.json). Uso esempi.";
+    }
+  }
+
+  function convertDataset(raw){
+    if(!Array.isArray(raw)) return [];
+    const out = [];
+    for(const it of raw){
+      if(!it || typeof it !== "object") continue;
+      const w1 = (it.w1 ?? "").toString().trim();
+      const w2 = (it.w2 ?? "").toString().trim();
+      const w3 = (it.w3 ?? "").toString().trim();
+      const w4 = (it.w4 ?? "").toString().trim();
+      const w5 = (it.w5 ?? "").toString().trim();
+      const sol = (it.solution ?? it.soluzione ?? "").toString().trim();
+
+      if(!w1 || !w2 || !w3 || !w4 || !w5 || !sol) continue;
+
+      out.push({
+        parole: [w1, w2, w3, w4, w5].map(cap),
+        soluzione: cap(sol)
+      });
+    }
+    return out;
+  }
+
+  function cap(s){
+    // niente invenzioni: solo pulizia e coerenza visiva in UI
+    return String(s).trim();
+  }
 
   // ---- Elementi UI (sempre via getElementById: iPhone safe)
   const el = (id)=>document.getElementById(id);
@@ -425,7 +480,6 @@
 
   // ---- Stato
   let corrente = null;
-  let solvedShown = false;
 
   // ---- Storage
   const KEY = "ghigliottina_pro_v1";
@@ -478,11 +532,11 @@
   }
 
   function nuova(){
+    if(!ARCHIVIO || ARCHIVIO.length === 0) ARCHIVIO = FALLBACK;
     corrente = pickRandom();
-    solvedShown = false;
 
     for(let i=0;i<5;i++){
-      c[i].textContent = corrente.parole[i] || "—";
+      c[i].textContent = (corrente.parole[i] || "—").toString();
     }
 
     inp.value = "";
@@ -490,7 +544,6 @@
     reveal.style.display = "none";
     solText.textContent = "—";
 
-    // utile su iPhone
     setTimeout(()=>inp.focus(), 50);
   }
 
@@ -543,7 +596,6 @@
     if(!corrente) return;
     reveal.style.display = "block";
     solText.textContent = corrente.soluzione;
-    solvedShown = true;
   }
 
   // Eventi
@@ -562,7 +614,10 @@
   // Init
   renderStats();
   renderHistory();
-  nuova();
+
+  // Carica dataset reale (se presente), poi avvia una nuova partita
+  loadQuizzesJson().finally(()=>nuova());
+
 })();
 </script>
 </body>
