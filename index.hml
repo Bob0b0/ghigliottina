@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Allenamento Ghigliottina</title>
+<link rel="apple-touch-icon" href="icon.png">
+
+<style>
+body {
+    font-family: Arial;
+    background: #1e1e1e;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.parole {
+    font-size: 28px;
+    margin: 20px;
+}
+
+input {
+    font-size: 24px;
+    padding: 5px;
+}
+
+button {
+    font-size: 18px;
+    padding: 10px;
+    margin: 5px;
+}
+
+#risultato {
+    font-size: 24px;
+    margin-top: 20px;
+}
+
+#soluzione {
+    color: yellow;
+    margin-top: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Allenamento Ghigliottina</h1>
+
+<div class="parole" id="parole"></div>
+
+<input type="text" id="risposta" placeholder="Scrivi la parola">
+
+<br>
+
+<button onclick="verifica()">Verifica</button>
+
+<button onclick="mostraSoluzione()">Mostra soluzione</button>
+
+<button onclick="nuova()">Nuova ghigliottina</button>
+
+<div id="risultato"></div>
+
+<div id="soluzione"></div>
+
+</div>
+
+<script>
+
+let archivio = [
+
+{
+parole: ["Taglio","Luce","Linea","Stato","Colpo"],
+soluzione: "DIRITTO"
+},
+
+{
+parole: ["Chiave","Serratura","Porta","Camera","Codice"],
+soluzione: "ACCESSO"
+},
+
+{
+parole: ["Tempo","Memoria","Storia","Diario","Foto"],
+soluzione: "RICORDO"
+},
+
+{
+parole: ["Ago","Filo","Punto","Nodo","Stoffa"],
+soluzione: "CUCIRE"
+}
+
+]
+
+let corrente = {}
+
+function nuova()
+{
+
+corrente = archivio[Math.floor(Math.random()*archivio.length)]
+
+document.getElementById("parole").innerHTML =
+corrente.parole.join(" - ")
+
+document.getElementById("risultato").innerHTML = ""
+
+document.getElementById("soluzione").innerHTML = ""
+
+document.getElementById("risposta").value = ""
+
+}
+
+function verifica()
+{
+
+let r = document.getElementById("risposta").value.toUpperCase()
+
+if(r == corrente.soluzione)
+document.getElementById("risultato").innerHTML = "CORRETTO"
+
+else
+document.getElementById("risultato").innerHTML = "SBAGLIATO"
+
+}
+
+function mostraSoluzione()
+{
+
+document.getElementById("soluzione").innerHTML =
+"Soluzione: " + corrente.soluzione
+
+}
+
+nuova()
+
+</script>
+
+</body>
+</html>
