@@ -1,129 +1,569 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-
 <head>
-<meta charset="UTF-8">
-<title>Ghigliottina</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>Ghigliottina</title>
 
-<!-- ICONA -->
-<link rel="apple-touch-icon" href="icon.png">
+  <!-- iOS app mode -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Ghigliottina" />
+  <link rel="apple-touch-icon" href="icon.png" />
 
-<!-- FULL SCREEN -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    :root{
+      --bg1:#071321;
+      --bg2:#02060a;
+      --panel:#0b1f36;
+      --neon:#22ff66;
+      --gold:#ffd45a;
+      --text:#eaf2ff;
+      --muted:#a9bfdc;
+      --card:#102a47;
+      --card2:#0b1f36;
+      --bad:#ff4d4d;
+      --good:#22ff66;
+      --shadow: 0 12px 30px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
 
-<!-- NOME APP -->
-<meta name="apple-mobile-web-app-title" content="Ghigliottina">
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 50% 10%, rgba(50,140,255,.35), transparent 60%),
+        radial-gradient(700px 400px at 20% 30%, rgba(255,212,90,.18), transparent 65%),
+        radial-gradient(900px 500px at 80% 45%, rgba(34,255,102,.12), transparent 70%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding: 18px 14px 30px;
+    }
 
-<style>
-body {
-  background: #000;
-  color: #00FF00;
-  font-family: "Courier New", monospace;
-  text-align: center;
-  margin-top: 40px;
-}
+    .wrap{
+      width:min(920px, 100%);
+      display:grid;
+      gap:14px;
+    }
 
-.parole {
-  font-size: 32px;
-  margin: 30px;
-}
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 12px 14px;
+      border-radius: var(--radius);
+      background: rgba(8,22,38,.65);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.08);
+    }
 
-input {
-  font-size: 28px;
-  width: 80%;
-  background: black;
-  color: #00FF00;
-  border: 1px solid #00FF00;
-  text-align: center;
-}
+    .brand{
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .brand h1{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:.12em;
+      text-transform: uppercase;
+    }
+    .brand .sub{
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing:.08em;
+    }
 
-button {
-  font-size: 22px;
-  background: black;
-  color: #00FF00;
-  border: 1px solid #00FF00;
-  margin: 10px;
-  padding: 10px;
-}
+    .score{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      font-size: 13px;
+      color: var(--muted);
+      white-space:nowrap;
+    }
+    .pill b{ color: var(--text); }
 
-#risultato {
-  font-size: 30px;
-  margin-top: 20px;
-}
+    .stage{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(16,42,71,.75), rgba(7,19,33,.72));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      position:relative;
+      padding: 14px;
+    }
 
-#soluzioneBox {
-  font-size: 24px;
-  margin-top: 20px;
-  color: yellow;
-}
-</style>
+    /* “luci” */
+    .stage::before{
+      content:"";
+      position:absolute; inset:-80px -40px auto -40px;
+      height:220px;
+      background: radial-gradient(closest-side, rgba(255,255,255,.18), transparent 70%);
+      transform: translateY(-30px);
+      pointer-events:none;
+    }
+    .stage::after{
+      content:"";
+      position:absolute; inset:auto -40px -120px -40px;
+      height:260px;
+      background: radial-gradient(closest-side, rgba(34,255,102,.10), transparent 68%);
+      pointer-events:none;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 6px;
+      position:relative;
+      z-index:1;
+    }
+
+    .card{
+      border-radius: 16px;
+      padding: 14px 10px;
+      text-align:center;
+      background: linear-gradient(180deg, rgba(16,42,71,.95), rgba(11,31,54,.90));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 8px 18px rgba(0,0,0,.35);
+      min-height: 64px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 800;
+      letter-spacing:.03em;
+      text-transform: uppercase;
+      font-size: clamp(12px, 2.2vw, 18px);
+    }
+
+    .hintrow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-top: 12px;
+      gap: 10px;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+    }
+
+    .prompt{
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing:.02em;
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 10px;
+      position:relative;
+      z-index:1;
+    }
+
+    input[type="text"]{
+      width:100%;
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      font-size: 18px;
+      outline: none;
+    }
+    input[type="text"]::placeholder{ color: rgba(233,242,255,.55); }
+
+    .btns{
+      display:flex;
+      gap: 10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing:.04em;
+      text-transform: uppercase;
+      box-shadow: 0 10px 20px rgba(0,0,0,.22);
+      cursor:pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active{ transform: translateY(1px); }
+
+    .primary{
+      border-color: rgba(34,255,102,.35);
+      background: linear-gradient(180deg, rgba(34,255,102,.18), rgba(255,255,255,.05));
+    }
+
+    .danger{
+      border-color: rgba(255,77,77,.35);
+      background: linear-gradient(180deg, rgba(255,77,77,.14), rgba(255,255,255,.05));
+    }
+
+    .result{
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      position:relative;
+      z-index:1;
+    }
+    .result .msg{
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .result .msg.good{ color: var(--good); }
+    .result .msg.bad{ color: var(--bad); }
+    .result .small{
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .reveal{
+      margin-top: 10px;
+      border-radius: 14px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      display:none;
+      position:relative;
+      z-index:1;
+    }
+    .reveal .head{
+      padding: 10px 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing:.06em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.05);
+    }
+    .reveal .body{
+      padding: 14px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing:.06em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align:center;
+    }
+
+    .history{
+      border-radius: var(--radius);
+      background: rgba(8,22,38,.60);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 12px 14px;
+    }
+    .history h2{
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .hist{
+      display:grid;
+      gap: 8px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      align-items:center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .row b{ color: var(--text); }
+    .badge{
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      letter-spacing:.06em;
+      text-transform: uppercase;
+      font-size: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+    }
+    .badge.ok{ color: var(--good); border-color: rgba(34,255,102,.25); }
+    .badge.ko{ color: var(--bad); border-color: rgba(255,77,77,.25); }
+
+    @media (max-width: 560px){
+      .cards{ grid-template-columns: 1fr; }
+      .card{ min-height: 52px; }
+      .controls{ grid-template-columns: 1fr; }
+      .btns{ justify-content:space-between; }
+      button{ flex: 1; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <h1>Ghigliottina</h1>
+        <div class="sub">Allenamento • 5 parole → 1 soluzione</div>
+      </div>
+      <div class="score">
+        <div class="pill">Giocate: <b id="pGiocate">0</b></div>
+        <div class="pill">Corrette: <b id="pOk">0</b></div>
+        <div class="pill">Serie: <b id="pStreak">0</b></div>
+      </div>
+    </div>
 
-<h1>GHIGLIOTTINA</h1>
+    <div class="stage">
+      <div class="hintrow">
+        <div class="prompt" id="prompt">Scrivi la parola finale e premi “Verifica” (o Invio).</div>
+        <div class="prompt">Modalità: <b>TV</b></div>
+      </div>
 
-<div class="parole" id="parole"></div>
+      <div class="cards">
+        <div class="card" id="c1">—</div>
+        <div class="card" id="c2">—</div>
+        <div class="card" id="c3">—</div>
+        <div class="card" id="c4">—</div>
+        <div class="card" id="c5">—</div>
+      </div>
 
-<input id="risposta" autocomplete="off" autocapitalize="characters">
+      <div class="controls">
+        <input id="inp" type="text" placeholder="La tua soluzione…" autocomplete="off" autocapitalize="characters" />
+        <div class="btns">
+          <button class="primary" id="btnVerifica">Verifica</button>
+          <button id="btnSoluzione">Soluzione</button>
+          <button class="danger" id="btnNuova">Nuova</button>
+        </div>
+      </div>
 
-<br>
+      <div class="result" id="boxResult" style="display:none;">
+        <div class="msg" id="msg">—</div>
+        <div class="small" id="small">—</div>
+      </div>
 
-<button onclick="verifica()">VERIFICA</button>
-<button onclick="mostraSoluzione()">SOLUZIONE</button>
-<button onclick="nuova()">NUOVA</button>
+      <div class="reveal" id="reveal">
+        <div class="head">
+          <span>Soluzione</span>
+          <span id="solHint">Mostrata</span>
+        </div>
+        <div class="body" id="solText">—</div>
+      </div>
+    </div>
 
-<div id="risultato"></div>
-<div id="soluzioneBox"></div>
+    <div class="history">
+      <h2>Storico (ultime 10)</h2>
+      <div class="hist" id="hist"></div>
+    </div>
+  </div>
 
 <script>
-let archivio = [
-  {
-    parole: ["Taglio","Luce","Linea","Stato","Colpo"],
-    soluzione: "DIRITTO"
-  },
-  {
-    parole: ["Chiave","Porta","Codice","Accesso","Sistema"],
-    soluzione: "CONTROLLO"
-  },
-  {
-    parole: ["Tempo","Foto","Diario","Infanzia","Passato"],
-    soluzione: "RICORDO"
+(function(){
+  "use strict";
+
+  // Dataset base (puoi espanderlo: basta aggiungere oggetti)
+  const ARCHIVIO = [
+    { parole:["Taglio","Luce","Linea","Stato","Colpo"], soluzione:"DIRITTO" },
+    { parole:["Chiave","Porta","Codice","Accesso","Sistema"], soluzione:"CONTROLLO" },
+    { parole:["Tempo","Foto","Diario","Infanzia","Passato"], soluzione:"RICORDO" },
+    { parole:["Punto","Linea","Segno","Tratto","Parola"], soluzione:"FINE" },
+    { parole:["Giro","Vento","Pagina","Boa","Affari"], soluzione:"VOLTA" },
+    { parole:["Scala","Voce","Prezzo","Valori","Musica"], soluzione:"TONO" }
+  ];
+
+  // ---- Elementi UI (sempre via getElementById: iPhone safe)
+  const el = (id)=>document.getElementById(id);
+
+  const c = [el("c1"), el("c2"), el("c3"), el("c4"), el("c5")];
+  const inp = el("inp");
+  const btnV = el("btnVerifica");
+  const btnS = el("btnSoluzione");
+  const btnN = el("btnNuova");
+
+  const boxResult = el("boxResult");
+  const msg = el("msg");
+  const small = el("small");
+
+  const reveal = el("reveal");
+  const solText = el("solText");
+
+  const pGiocate = el("pGiocate");
+  const pOk = el("pOk");
+  const pStreak = el("pStreak");
+  const hist = el("hist");
+
+  // ---- Stato
+  let corrente = null;
+  let solvedShown = false;
+
+  // ---- Storage
+  const KEY = "ghigliottina_pro_v1";
+  const loadState = ()=>{
+    try{
+      return JSON.parse(localStorage.getItem(KEY)) || { giocate:0, ok:0, streak:0, history:[] };
+    }catch(e){
+      return { giocate:0, ok:0, streak:0, history:[] };
+    }
+  };
+  const saveState = (s)=>localStorage.setItem(KEY, JSON.stringify(s));
+
+  let S = loadState();
+
+  function renderStats(){
+    pGiocate.textContent = String(S.giocate);
+    pOk.textContent = String(S.ok);
+    pStreak.textContent = String(S.streak);
   }
-];
 
-let corrente = null;
-
-function nuova() {
-  corrente = archivio[Math.floor(Math.random() * archivio.length)];
-
-  document.getElementById("parole").innerHTML = corrente.parole.join("<br>");
-  document.getElementById("risultato").innerHTML = "";
-  document.getElementById("soluzioneBox").innerHTML = "";
-  document.getElementById("risposta").value = "";
-
-  // comodo su iPhone
-  document.getElementById("risposta").focus();
-}
-
-function verifica() {
-  const r = document.getElementById("risposta").value.trim().toUpperCase();
-
-  if (r === corrente.soluzione) {
-    document.getElementById("risultato").innerHTML = "ESATTO";
-  } else {
-    document.getElementById("risultato").innerHTML = "NO";
+  function renderHistory(){
+    const arr = S.history.slice(0,10);
+    hist.innerHTML = "";
+    if(arr.length === 0){
+      hist.innerHTML = `<div class="row"><div>Nessuna giocata ancora.</div><div class="badge">—</div></div>`;
+      return;
+    }
+    for(const it of arr){
+      const parole = it.parole.join(" • ");
+      const badgeClass = it.ok ? "ok" : "ko";
+      const badgeText = it.ok ? "OK" : "NO";
+      const you = it.you ? ` — tu: <b>${escapeHtml(it.you)}</b>` : "";
+      hist.insertAdjacentHTML("beforeend",
+        `<div class="row">
+           <div>${escapeHtml(parole)}${you}</div>
+           <div class="badge ${badgeClass}">${badgeText}</div>
+         </div>`
+      );
+    }
   }
-}
 
-function mostraSoluzione() {
-  document.getElementById("soluzioneBox").innerHTML = "Soluzione: " + corrente.soluzione;
-}
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, s => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[s]));
+  }
 
-nuova();
+  function pickRandom(){
+    return ARCHIVIO[Math.floor(Math.random()*ARCHIVIO.length)];
+  }
+
+  function nuova(){
+    corrente = pickRandom();
+    solvedShown = false;
+
+    for(let i=0;i<5;i++){
+      c[i].textContent = corrente.parole[i] || "—";
+    }
+
+    inp.value = "";
+    boxResult.style.display = "none";
+    reveal.style.display = "none";
+    solText.textContent = "—";
+
+    // utile su iPhone
+    setTimeout(()=>inp.focus(), 50);
+  }
+
+  function normalizza(s){
+    return String(s || "")
+      .trim()
+      .toUpperCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,""); // toglie accenti
+  }
+
+  function verifica(){
+    if(!corrente) return;
+
+    const r = normalizza(inp.value);
+    const sol = normalizza(corrente.soluzione);
+
+    S.giocate += 1;
+
+    const ok = (r === sol);
+
+    if(ok){
+      S.ok += 1;
+      S.streak += 1;
+      msg.textContent = "ESATTO!";
+      msg.className = "msg good";
+      small.textContent = "Bravo. Vuoi passare alla prossima?";
+    }else{
+      S.streak = 0;
+      msg.textContent = "NO";
+      msg.className = "msg bad";
+      small.textContent = "Premi “Soluzione” per vedere la risposta.";
+    }
+
+    boxResult.style.display = "flex";
+
+    S.history.unshift({
+      parole: corrente.parole.slice(0,5),
+      ok: ok,
+      you: inp.value.trim(),
+      sol: corrente.soluzione
+    });
+    S.history = S.history.slice(0, 50);
+
+    saveState(S);
+    renderStats();
+    renderHistory();
+  }
+
+  function mostraSoluzione(){
+    if(!corrente) return;
+    reveal.style.display = "block";
+    solText.textContent = corrente.soluzione;
+    solvedShown = true;
+  }
+
+  // Eventi
+  btnV.addEventListener("click", verifica);
+  btnS.addEventListener("click", mostraSoluzione);
+  btnN.addEventListener("click", nuova);
+
+  // Invio = verifica
+  inp.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){
+      e.preventDefault();
+      verifica();
+    }
+  });
+
+  // Init
+  renderStats();
+  renderHistory();
+  nuova();
+})();
 </script>
-
 </body>
 </html>
