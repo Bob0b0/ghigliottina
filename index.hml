@@ -1,144 +1,232 @@
-
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
+
 <meta charset="UTF-8">
-<title>Allenamento Ghigliottina</title>
+
+<title>Ghigliottina</title>
+
+<!-- ICONA -->
 <link rel="apple-touch-icon" href="icon.png">
 
-<style>
-body {
-    font-family: Arial;
-    background: #1e1e1e;
-    color: white;
-    text-align: center;
-}
+<!-- FULL SCREEN -->
+<meta name="apple-mobile-web-app-capable" content="yes">
 
-.container {
-    margin-top: 50px;
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+<!-- NOME APP -->
+<meta name="apple-mobile-web-app-title" content="Ghigliottina">
+
+<style>
+
+body {
+
+background: #000;
+
+color: #00FF00;
+
+font-family: Courier New;
+
+text-align: center;
+
+margin-top: 40px;
+
 }
 
 .parole {
-    font-size: 28px;
-    margin: 20px;
+
+font-size: 32px;
+
+margin: 30px;
+
 }
 
 input {
-    font-size: 24px;
-    padding: 5px;
+
+font-size: 28px;
+
+width: 80%;
+
+background: black;
+
+color: #00FF00;
+
+border: 1px solid #00FF00;
+
+text-align: center;
+
 }
 
 button {
-    font-size: 18px;
-    padding: 10px;
-    margin: 5px;
+
+font-size: 22px;
+
+background: black;
+
+color: #00FF00;
+
+border: 1px solid #00FF00;
+
+margin: 10px;
+
+padding: 10px;
+
 }
 
 #risultato {
-    font-size: 24px;
-    margin-top: 20px;
+
+font-size: 30px;
+
+margin-top: 20px;
+
 }
 
 #soluzione {
-    color: yellow;
-    margin-top: 10px;
+
+font-size: 24px;
+
+margin-top: 20px;
+
+color: yellow;
+
 }
+
 </style>
 
 </head>
 
+
 <body>
 
-<div class="container">
 
-<h1>Allenamento Ghigliottina</h1>
+<h1>GHIGLIOTTINA</h1>
+
 
 <div class="parole" id="parole"></div>
 
-<input type="text" id="risposta" placeholder="Scrivi la parola">
+
+<input id="risposta">
+
 
 <br>
 
-<button onclick="verifica()">Verifica</button>
 
-<button onclick="mostraSoluzione()">Mostra soluzione</button>
+<button onclick="verifica()">VERIFICA</button>
 
-<button onclick="nuova()">Nuova ghigliottina</button>
+<button onclick="soluzione()">SOLUZIONE</button>
+
+<button onclick="nuova()">NUOVA</button>
+
 
 <div id="risultato"></div>
 
 <div id="soluzione"></div>
 
-</div>
 
 <script>
 
+
 let archivio = [
 
+
 {
-parole: ["Taglio","Luce","Linea","Stato","Colpo"],
-soluzione: "DIRITTO"
+
+parole:
+
+["Taglio","Luce","Linea","Stato","Colpo"],
+
+soluzione:
+
+"DIRITTO"
+
 },
 
 {
-parole: ["Chiave","Serratura","Porta","Camera","Codice"],
-soluzione: "ACCESSO"
+
+parole:
+
+["Chiave","Porta","Codice","Accesso","Sistema"],
+
+soluzione:
+
+"CONTROLLO"
+
 },
 
 {
-parole: ["Tempo","Memoria","Storia","Diario","Foto"],
-soluzione: "RICORDO"
-},
 
-{
-parole: ["Ago","Filo","Punto","Nodo","Stoffa"],
-soluzione: "CUCIRE"
+parole:
+
+["Tempo","Foto","Diario","Infanzia","Passato"],
+
+soluzione:
+
+"RICORDO"
+
 }
 
 ]
 
-let corrente = {}
+
+let corrente
+
 
 function nuova()
+
 {
 
 corrente = archivio[Math.floor(Math.random()*archivio.length)]
 
-document.getElementById("parole").innerHTML =
-corrente.parole.join(" - ")
+parole.innerHTML = corrente.parole.join("<br>")
 
-document.getElementById("risultato").innerHTML = ""
+risultato.innerHTML = ""
 
-document.getElementById("soluzione").innerHTML = ""
+soluzione.innerHTML = ""
 
-document.getElementById("risposta").value = ""
+risposta.value = ""
 
 }
+
 
 function verifica()
+
 {
 
-let r = document.getElementById("risposta").value.toUpperCase()
+if(risposta.value.toUpperCase()
 
-if(r == corrente.soluzione)
-document.getElementById("risultato").innerHTML = "CORRETTO"
+== corrente.soluzione)
+
+risultato.innerHTML = "ESATTO"
 
 else
-document.getElementById("risultato").innerHTML = "SBAGLIATO"
+
+risultato.innerHTML = "NO"
 
 }
 
-function mostraSoluzione()
+
+function soluzione()
+
 {
 
-document.getElementById("soluzione").innerHTML =
-"Soluzione: " + corrente.soluzione
+soluzione.innerHTML
+
+= corrente.soluzione
 
 }
+
 
 nuova()
 
+
 </script>
 
+
 </body>
+
+
 </html>
