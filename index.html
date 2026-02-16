@@ -82,4 +82,48 @@ button {
 let archivio = [
   {
     parole: ["Taglio","Luce","Linea","Stato","Colpo"],
-    soluz
+    soluzione: "DIRITTO"
+  },
+  {
+    parole: ["Chiave","Porta","Codice","Accesso","Sistema"],
+    soluzione: "CONTROLLO"
+  },
+  {
+    parole: ["Tempo","Foto","Diario","Infanzia","Passato"],
+    soluzione: "RICORDO"
+  }
+];
+
+let corrente = null;
+
+function nuova() {
+  corrente = archivio[Math.floor(Math.random() * archivio.length)];
+
+  document.getElementById("parole").innerHTML = corrente.parole.join("<br>");
+  document.getElementById("risultato").innerHTML = "";
+  document.getElementById("soluzioneBox").innerHTML = "";
+  document.getElementById("risposta").value = "";
+
+  // comodo su iPhone
+  document.getElementById("risposta").focus();
+}
+
+function verifica() {
+  const r = document.getElementById("risposta").value.trim().toUpperCase();
+
+  if (r === corrente.soluzione) {
+    document.getElementById("risultato").innerHTML = "ESATTO";
+  } else {
+    document.getElementById("risultato").innerHTML = "NO";
+  }
+}
+
+function mostraSoluzione() {
+  document.getElementById("soluzioneBox").innerHTML = "Soluzione: " + corrente.soluzione;
+}
+
+nuova();
+</script>
+
+</body>
+</html>
