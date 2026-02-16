@@ -2,9 +2,7 @@
 <html lang="it">
 
 <head>
-
 <meta charset="UTF-8">
-
 <title>Ghigliottina</title>
 
 <!-- ICONA -->
@@ -12,221 +10,76 @@
 
 <!-- FULL SCREEN -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <!-- NOME APP -->
 <meta name="apple-mobile-web-app-title" content="Ghigliottina">
 
 <style>
-
 body {
-
-background: #000;
-
-color: #00FF00;
-
-font-family: Courier New;
-
-text-align: center;
-
-margin-top: 40px;
-
+  background: #000;
+  color: #00FF00;
+  font-family: "Courier New", monospace;
+  text-align: center;
+  margin-top: 40px;
 }
 
 .parole {
-
-font-size: 32px;
-
-margin: 30px;
-
+  font-size: 32px;
+  margin: 30px;
 }
 
 input {
-
-font-size: 28px;
-
-width: 80%;
-
-background: black;
-
-color: #00FF00;
-
-border: 1px solid #00FF00;
-
-text-align: center;
-
+  font-size: 28px;
+  width: 80%;
+  background: black;
+  color: #00FF00;
+  border: 1px solid #00FF00;
+  text-align: center;
 }
 
 button {
-
-font-size: 22px;
-
-background: black;
-
-color: #00FF00;
-
-border: 1px solid #00FF00;
-
-margin: 10px;
-
-padding: 10px;
-
+  font-size: 22px;
+  background: black;
+  color: #00FF00;
+  border: 1px solid #00FF00;
+  margin: 10px;
+  padding: 10px;
 }
 
 #risultato {
-
-font-size: 30px;
-
-margin-top: 20px;
-
+  font-size: 30px;
+  margin-top: 20px;
 }
 
-#soluzione {
-
-font-size: 24px;
-
-margin-top: 20px;
-
-color: yellow;
-
+#soluzioneBox {
+  font-size: 24px;
+  margin-top: 20px;
+  color: yellow;
 }
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <h1>GHIGLIOTTINA</h1>
-
 
 <div class="parole" id="parole"></div>
 
-
-<input id="risposta">
-
+<input id="risposta" autocomplete="off" autocapitalize="characters">
 
 <br>
 
-
 <button onclick="verifica()">VERIFICA</button>
-
-<button onclick="soluzione()">SOLUZIONE</button>
-
+<button onclick="mostraSoluzione()">SOLUZIONE</button>
 <button onclick="nuova()">NUOVA</button>
 
-
 <div id="risultato"></div>
-
-<div id="soluzione"></div>
-
+<div id="soluzioneBox"></div>
 
 <script>
-
-
 let archivio = [
-
-
-{
-
-parole:
-
-["Taglio","Luce","Linea","Stato","Colpo"],
-
-soluzione:
-
-"DIRITTO"
-
-},
-
-{
-
-parole:
-
-["Chiave","Porta","Codice","Accesso","Sistema"],
-
-soluzione:
-
-"CONTROLLO"
-
-},
-
-{
-
-parole:
-
-["Tempo","Foto","Diario","Infanzia","Passato"],
-
-soluzione:
-
-"RICORDO"
-
-}
-
-]
-
-
-let corrente
-
-
-function nuova()
-
-{
-
-corrente = archivio[Math.floor(Math.random()*archivio.length)]
-
-parole.innerHTML = corrente.parole.join("<br>")
-
-risultato.innerHTML = ""
-
-soluzione.innerHTML = ""
-
-risposta.value = ""
-
-}
-
-
-function verifica()
-
-{
-
-if(risposta.value.toUpperCase()
-
-== corrente.soluzione)
-
-risultato.innerHTML = "ESATTO"
-
-else
-
-risultato.innerHTML = "NO"
-
-}
-
-
-function soluzione()
-
-{
-
-soluzione.innerHTML
-
-= corrente.soluzione
-
-}
-
-
-nuova()
-
-
-</script>
-
-
-</body>
-
-
-</html>
+  {
+    parole: ["Taglio","Luce","Linea","Stato","Colpo"],
+    soluz
